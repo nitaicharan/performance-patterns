@@ -4,6 +4,7 @@ import { Sales } from './data/sales-70-27-30';
 import { Rnd } from './data/rnd-70-27-30';
 import { EmployeeListComponent } from './employee-list/employee-list';
 import * as Plotly from 'plotly.js-dist-min';
+import { List } from 'immutable';
 
 const NumRange: [number, number] = [23, 28];
 
@@ -19,15 +20,15 @@ const NumRange: [number, number] = [23, 28];
       <app-employee-list
         [data]="salesList"
         department="Sales"
-        (add)="add(salesList, $event)"
-        (remove)="remove(salesList, $event)"
+        (add)="salesList = add(salesList, $event)"
+        (remove)="salesList = remove(salesList, $event)"
       ></app-employee-list>
 
       <app-employee-list
         [data]="rndList"
         department="R&D"
-        (add)="add(rndList, $event)"
-        (remove)="remove(rndList, $event)"
+        (add)="rndList = add(rndList, $event)"
+        (remove)="rndList = remove(rndList, $event)"
       ></app-employee-list>
     </section>
   `,
@@ -36,8 +37,8 @@ const NumRange: [number, number] = [23, 28];
 export class App {
   private readonly ngZone = inject(NgZone);
   private readonly generator = new ListGenerator();
-  salesList: EmployeeData[] = Sales;
-  rndList: EmployeeData[] = Rnd;
+  salesList = List(Sales);
+  rndList = List(Rnd);
   label = '';
 
   ngOnInit() {
@@ -66,11 +67,11 @@ export class App {
     this.ngZone.runOutsideAngular(() => Plotly.newPlot('chart', data as any));
   }
 
-  add(list: EmployeeData[], name: string) {
+  add(list: List<EmployeeData>, name: string) {
     return list.unshift({ label: name, num: this.generator.generateNumber(NumRange) });
   }
 
-  remove(list: EmployeeData[], node: EmployeeData) {
+  remove(list: List<EmployeeData>, node: EmployeeData) {
     return list.splice(list.indexOf(node), 1);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatListModule } from '@angular/material/list';
@@ -6,6 +6,7 @@ import { MatChipsModule } from '@angular/material/chips';
 
 import { EmployeeData } from '../shared/list-generator.service';
 import { MatInputModule } from '@angular/material/input';
+import { List } from 'immutable';
 
 const fibonacci = (num: number): number => {
   if (num === 1 || num === 2) {
@@ -31,7 +32,7 @@ const fibonacci = (num: number): number => {
     </mat-form-field>
 
     <mat-list>
-      @if (data?.length === 0) {
+      @if (data?.size === 0) {
         <div class="empty-list-label">Empty list</div>
       }
       @for (item of data; track $index) {
@@ -45,15 +46,16 @@ const fibonacci = (num: number): number => {
           </h3>
         </mat-list-item>
       }
-      @if (data?.length) {
+      @if (data?.size) {
         <mat-divider></mat-divider>
       }
     </mat-list>
   `,
   styleUrl: 'employee-list.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmployeeListComponent {
-  @Input() data: EmployeeData[] | null = null;
+  @Input() data: List<EmployeeData> | null = null;
   @Input() department: string = '';
 
   @Output() remove = new EventEmitter<EmployeeData>();
