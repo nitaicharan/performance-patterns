@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, NgZone } from '@angular/core';
 import { EmployeeData, ListGenerator } from './shared/list-generator.service';
 import { Sales } from './data/sales-70-27-30';
 import { Rnd } from './data/rnd-70-27-30';
@@ -34,7 +34,8 @@ const NumRange: [number, number] = [23, 28];
   styleUrl: './app.css',
 })
 export class App {
-  private generator = new ListGenerator();
+  private readonly ngZone = inject(NgZone);
+  private readonly generator = new ListGenerator();
   salesList: EmployeeData[] = Sales;
   rndList: EmployeeData[] = Rnd;
   label = '';
@@ -62,7 +63,7 @@ export class App {
       data[0].y.push(entity[1]);
     }
 
-    Plotly.newPlot('chart', data as any);
+    this.ngZone.runOutsideAngular(() => Plotly.newPlot('chart', data as any));
   }
 
   add(list: EmployeeData[], name: string) {
