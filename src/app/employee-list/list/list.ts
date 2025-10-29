@@ -6,17 +6,18 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatInputModule } from '@angular/material/input';
 import { EmployeeData } from '../../shared/list-generator.service';
 import { List as ListImmutable } from 'immutable';
-
-const fibonacci = (num: number): number => {
-  if (num === 1 || num === 2) {
-    return 1;
-  }
-  return fibonacci(num - 1) + fibonacci(num - 2);
-};
+import { CalculatePipe } from './calculate-pipe';
 
 @Component({
   selector: 'app-list',
-  imports: [FormsModule, MatFormFieldModule, MatListModule, MatInputModule, MatChipsModule],
+  imports: [
+    CalculatePipe,
+    FormsModule,
+    MatFormFieldModule,
+    MatListModule,
+    MatInputModule,
+    MatChipsModule,
+  ],
   template: `
     <mat-list>
       @if (data?.size === 0) {
@@ -28,7 +29,7 @@ const fibonacci = (num: number): number => {
             {{ item.label }}
 
             <mat-chip title="Score">
-              {{ calculate(item.num) }}
+              {{ item.num | calculate }}
             </mat-chip>
           </h3>
         </mat-list-item>
@@ -44,8 +45,4 @@ const fibonacci = (num: number): number => {
 export class List {
   @Input() data: ListImmutable<EmployeeData> | null = null;
   @Output() remove = new EventEmitter<EmployeeData>();
-
-  calculate(num: number) {
-    return fibonacci(num);
-  }
 }
