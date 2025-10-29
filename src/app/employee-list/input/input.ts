@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, output, Output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatListModule } from '@angular/material/list';
@@ -14,21 +14,28 @@ import { MatInputModule } from '@angular/material/input';
         placeholder="Enter name here"
         matInput
         type="text"
-        [(ngModel)]="label"
-        (keydown)="handleKey($event)"
+        [value]="label()"
+        (input)="onChange($event)"
+        (keydown.enter)="handleKey()"
       />
     </mat-form-field>
   `,
   styleUrl: './input.css',
 })
 export class Input {
-  label: string = '';
-  @Output() add = new EventEmitter<string>();
+  label = signal('');
+  add = output<string>();
 
-  handleKey(event: any) {
-    if (event.keyCode === 13) {
-      this.add.emit(this.label);
-      this.label = '';
+  onChange(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.label.set(value);
+  }
+
+  handleKey() {
+    const value = this.label();
+    if (value) {
+      this.add.emit(value);
+      this.label.set('');
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatListModule } from '@angular/material/list';
@@ -22,17 +22,17 @@ import { List as ListComponent } from './list/list';
     ListComponent,
   ],
   template: `
-    <h1 title="Department">{{ department }}</h1>
+    <h1 title="Department">{{ department() }}</h1>
 
     <app-input (add)="add.emit($event)" />
-    <app-list [data]="data" (remove)="remove.emit($event)" />
+    <app-list [data]="data()" (remove)="remove.emit($event)" />
   `,
   styleUrl: 'employee-list.css',
 })
 export class EmployeeListComponent {
-  @Input() data: List<EmployeeData> | null = null;
-  @Input() department: string = '';
+  data = input<List<EmployeeData> | null>(null);
+  department = input<string>('');
 
-  @Output() remove = new EventEmitter<EmployeeData>();
-  @Output() add = new EventEmitter<string>();
+  remove = output<EmployeeData>();
+  add = output<string>();
 }
